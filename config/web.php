@@ -3,7 +3,11 @@
 $params = require(__DIR__ . '/params.php');
 
 $routes = [
-	'createuser' => 'user/create'
+	'createuser' 	 	=> 'roster/create',
+	'addparticipant' 	=> 'roster/add-participant',
+	'renameparticipant' => 'roster/rename-participant',
+	'removeparticipant' => 'roster/remove-participant',
+	'getroster' 		=> 'roster/roster',
 ];
 
 $config = [
@@ -19,7 +23,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => '',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
