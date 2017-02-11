@@ -3,7 +3,7 @@
 $params = require(__DIR__ . '/params.php');
 
 $routes = [
-
+	'createuser' => 'user/create'
 ];
 
 $config = [
