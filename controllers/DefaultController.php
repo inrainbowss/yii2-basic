@@ -7,12 +7,6 @@ use yii\web\Response;
 class DefaultController extends Controller
 {
 
-//	public function beforeAction($action)
-//	{
-//		parent::beforeAction($action);
-//	}
-
-
 	public function actionSuccess(array $data = [])
 	{
 		$response = Yii::$app->response;
