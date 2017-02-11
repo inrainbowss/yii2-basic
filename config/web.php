@@ -45,9 +45,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-
-            ],
+            'rules' => $routes,
         ],
     ],
     'params' => $params,
