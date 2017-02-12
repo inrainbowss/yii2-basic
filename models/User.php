@@ -72,16 +72,15 @@ class User extends ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-    	if ($insert) {
-    		$exists = static::findByUuid($this->uuid);
+		if ($insert) {
+			$exists = static::findByUuid($this->uuid);
 
-    		if ($exists)
-			{
+			if ($exists) {
 				$this->addError('saveError', 'user already exists');
 				return false;
 			}
 		}
 
-    	return parent::beforeSave($insert);
+		return parent::beforeSave($insert);
 	}
 }
