@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\{Group, User, Participant};
+use app\models\{
+	AddParticipantForm, EditRosterForm, Group, User, Participant
+};
 
 use Yii;
 
@@ -29,13 +31,13 @@ class RosterController extends DefaultController
 
 		if (!$uuid)
 		{
-			$this->actionError('you must pass the uuid parameter', 400);
+			return $this->actionError('you must pass the uuid parameter', 400);
 		}
 
 		$user = User::findByUuid($uuid);
 		if (!$user instanceof User)
 		{
-			$this->actionError('user does not exist');
+			return $this->actionError('user does not exist');
 		}
 		$roster = User::getRoster($user->id);
 
@@ -49,28 +51,17 @@ class RosterController extends DefaultController
 		$title = Yii::$app->request->get('title', null);
 		$group = Yii::$app->request->get('group', null);
 
-		if (!$uuid || !$participant || !$title || !$group)
+		$form = new AddParticipantForm();
+		$form->load(Yii::$app->request->get());
+		if (!$form->validate())
 		{
-			return $this->actionError(
-				'you must pass all required parameters: uuid, participant, title, group',
-				400
-			);
+			return $this->actionError($form->errors);
 		}
 
 		$user = User::findByUuid($uuid);
-		if (!$user instanceof User)
-		{
-			return $this->actionError('user does not exist');
-		}
-
 		$user_participant = User::findByUuid($participant);
-		if (!$user_participant instanceof User)
-		{
-			return $this->actionError('participant does not exist');
-		}
 
 		$group = Group::findOrCreate($user->id, $group);
-
 		if ($group == false)
 		{
 			return $this->actionError($group->errors);
@@ -78,7 +69,7 @@ class RosterController extends DefaultController
 
 		if (Participant::findParticipant($user_participant->id, $group->id))
 		{
-			return $this->actionError('participant already exist in group');
+			return $this->actionError('participant already exists in group');
 		}
 
 		$participant = Participant::addParticipant($user_participant->id, $group->id, $title);
@@ -96,30 +87,20 @@ class RosterController extends DefaultController
 		$participant = Yii::$app->request->get('participant', null);
 		$group = Yii::$app->request->get('group', null);
 
-		if (!$uuid || !$participant || !$group)
+		$form = new EditRosterForm();
+		$form->load(Yii::$app->request->get());
+		if (!$form->validate())
 		{
-			return $this->actionError(
-				'you must pass all required parameters: uuid, participant, group',
-				400
-			);
+			return $this->actionError($form->errors);
 		}
 
 		$user = User::findByUuid($uuid);
-		if (!$user instanceof User)
-		{
-			return $this->actionError('user does not exist');
-		}
-
 		$user_participant = User::findByUuid($participant);
-		if (!$user_participant instanceof User)
-		{
-			return $this->actionError('participant does not exist');
-		}
 
 		$group = Group::getUserGroup($user->id, $group);
 		if (!$group instanceof Group)
 		{
-			return $this->actionError('this group does not exist');
+			return $this->actionError('group does not exist');
 		}
 
 		$participant = Participant::findParticipant($user_participant->id, $group->id);
@@ -133,6 +114,11 @@ class RosterController extends DefaultController
 			return $this->actionError('error on deleting participant');
 		}
 
+		if ($group->getparticipants()->count() == 0)
+		{
+			$group->delete();
+		}
+
 		return $this->actionSuccess();
 	}
 
@@ -143,30 +129,20 @@ class RosterController extends DefaultController
 		$group = Yii::$app->request->get('group', null);
 		$title = Yii::$app->request->get('title', null);
 
-		if (!$uuid || !$participant || !$group || !$title)
+		$form = new AddParticipantForm();
+		$form->load(Yii::$app->request->get());
+		if (!$form->validate())
 		{
-			return $this->actionError(
-				'you must pass all required parameters: uuid, participant, group, title',
-				400
-			);
+			return $this->actionError($form->errors);
 		}
 
 		$user = User::findByUuid($uuid);
-		if (!$user instanceof User)
-		{
-			return $this->actionError('user does not exist');
-		}
-
 		$user_participant = User::findByUuid($participant);
-		if (!$user_participant instanceof User)
-		{
-			return $this->actionError('participant does not exist');
-		}
 
 		$group = Group::getUserGroup($user->id, $group);
 		if (!$group instanceof Group)
 		{
-			return $this->actionError('this group does not exist');
+			return $this->actionError('group does not exist');
 		}
 
 		$participant = Participant::findParticipant($user_participant->id, $group->id);
