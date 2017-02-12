@@ -12,6 +12,11 @@ class Group extends ActiveRecord
 //    public $users;
 
 
+	/**
+	 * @param int $user_id
+	 * @param string $title
+	 * @return Group|bool
+	 */
 	public static function findOrCreate(int $user_id, string $title)
 	{
 		$group = Group::getUserGroup($user_id, $title);
@@ -33,16 +38,27 @@ class Group extends ActiveRecord
 		return $group;
 	}
 
+	/**
+	 * @param int $user_id
+	 * @param string $title
+	 * @return array|null|ActiveRecord
+	 */
 	public static function getUserGroup(int $user_id, string $title)
 	{
 		return static::find()->where(['user_id' => $user_id, 'title' => $title])->one();
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function tableName()
 	{
 		return 'groups';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
@@ -51,6 +67,9 @@ class Group extends ActiveRecord
 		];
 	}
 
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getparticipants()
 	{
 		return $this->hasMany(Participant::className(), ['group_id' => 'id']);

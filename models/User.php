@@ -8,6 +8,9 @@ class User extends ActiveRecord
 //    public $id;
 //    public $uuid;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
@@ -15,21 +18,35 @@ class User extends ActiveRecord
 		];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function formName()
 	{
 		return '';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public static function tableName()
 	{
 		return 'users';
 	}
 
+	/**
+	 * @param string $uuid
+	 * @return User|null
+	 */
 	public static function findByUuid(string $uuid)
 	{
 		return static::find()->where(['uuid' => $uuid])->one();
 	}
 
+	/**
+	 * @param int $user_id
+	 * @return array
+	 */
 	public static function getRoster(int $user_id)
 	{
 		$groups = Group::find()->where(['user_id' => $user_id])->with(['participants'])->all();
@@ -49,6 +66,10 @@ class User extends ActiveRecord
 		return $data;
 	}
 
+	/**
+	 * @param bool $insert
+	 * @return bool
+	 */
 	public function beforeSave($insert)
 	{
     	if ($insert) {

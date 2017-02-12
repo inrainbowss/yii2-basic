@@ -12,11 +12,22 @@ class Participant extends ActiveRecord
 //    public $group_id;
 
 
+	/**
+	 * @param $user_id
+	 * @param $group_id
+	 * @return Participant
+	 */
 	public static function findParticipant($user_id, $group_id)
 	{
 		return static::find()->where(['user_id' => $user_id, 'group_id' => $group_id])->one();
 	}
 
+	/**
+	 * @param $user_id
+	 * @param $group_id
+	 * @param $title
+	 * @return Participant|bool
+	 */
 	public static function addParticipant($user_id, $group_id, $title)
 	{
 		$model = new static();
@@ -24,21 +35,25 @@ class Participant extends ActiveRecord
 		$model->group_id = $group_id;
 		$model->title = $title;
 
-		if (!$model->validate())
+		if (!$model->save())
 		{
 			return false;
 		}
 
-		$model->save();
-
 		return $model;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public static function tableName()
 	{
 		return 'participants';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
@@ -48,6 +63,9 @@ class Participant extends ActiveRecord
 		];
 	}
 
+	/**
+	 * @return array|null|ActiveRecord
+	 */
 	public function getUser()
 	{
 		return $this->hasOne(User::className(), ['id' => 'user_id'])->one();
